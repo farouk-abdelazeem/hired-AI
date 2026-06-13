@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState, useCallback } from "react";
+import { useRef, useState, useCallback, useEffect } from "react";
 
 export const WHISPER_MODELS = [
     { id: "onnx-community/whisper-tiny", label: "Tiny (~75MB)", description: "Fastest, basic accuracy" },
@@ -25,7 +25,7 @@ interface UseLocalWhisperOptions {
  * 2. Capturing PCM audio from a MediaStream (display audio)
  * 3. Feeding audio chunks to Whisper for local transcription
  */
-export function useLocalWhisper({ onTranscript, whisperModel = DEFAULT_WHISPER_MODEL, chunkDurationSec = 4 }: UseLocalWhisperOptions) {
+export function useLocalWhisper({ onTranscript, whisperModel = DEFAULT_WHISPER_MODEL }: UseLocalWhisperOptions) {
     const [isModelLoading, setIsModelLoading] = useState(false);
     const [isModelReady, setIsModelReady] = useState(false);
     const [modelProgress, setModelProgress] = useState(0);
@@ -39,7 +39,10 @@ export function useLocalWhisper({ onTranscript, whisperModel = DEFAULT_WHISPER_M
     const isCapturingRef = useRef(false);
     const chunkTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
     const onTranscriptRef = useRef(onTranscript);
-    onTranscriptRef.current = onTranscript;
+    
+    useEffect(() => {
+        onTranscriptRef.current = onTranscript;
+    }, [onTranscript]);
 
     /** Initialize the Whisper worker and load the model */
     const initWhisper = useCallback((): Promise<void> => {

@@ -31,7 +31,6 @@ import {
     Volume2,
     AlertTriangle,
     Zap,
-    MessageSquare,
 } from "lucide-react";
 
 interface SessionData {
@@ -49,21 +48,6 @@ interface Suggestion {
     answer: string;
     timestamp: number;
 }
-
-const QUICK_TOPICS = [
-    { label: "Intro", prompt: "Tell me about yourself" },
-    { label: "Wind experience", prompt: "Tell me about your experience in the wind energy industry" },
-    { label: "Risk", prompt: "How do you approach risk management?" },
-    { label: "Major success / challenge", prompt: "Tell me about your biggest professional success and a major challenge you've overcome" },
-    { label: "First 90-day plan", prompt: "What would your first 90 days look like in this role?" },
-    { label: "Resistance to change", prompt: "How do you handle resistance to change within a team or organization?" },
-    { label: "Bridging the gap", prompt: "How do you bridge the gap between technical knowledge and staying updated with industry trends?" },
-    { label: "Gambling vs calculated risk", prompt: "How do you distinguish between taking a gamble versus a calculated risk?" },
-    { label: "Coaching", prompt: "Tell me about your coaching and mentoring style" },
-    { label: "KPIs and metrics", prompt: "What KPIs and metrics do you track, and how do you use them to drive performance?" },
-    { label: "Conflict", prompt: "How do you handle conflict in the workplace?" },
-    { label: "Questions", prompt: "The interviewer asked: Do you have any questions for us? List ONLY these questions exactly as written, do NOT add any commentary, rephrasing, introduction, or extra text:\n\n1) Looking at the overall schedule for the project right now, what is the exact milestone the team is pushing forward this quarter?\n\n2) If I join tomorrow, what does a massive win look like for this role in the first 90 days?\n\n3) Where do you typically see the biggest friction point internally between engineering's technical requirements and procurement's commercial targets, and how does the leadership team handle that balance?\n\n4) Considering the nature of double-landlock of Uzbekistan, from your current state, are we primarily relying on the Northern Corridor via Kazakhstan, or you're using alternative multi-modal routes to bypass transit bottlenecks?" },
-];
 
 async function readApiError(response: Response, fallback: string) {
     try {
@@ -752,7 +736,7 @@ export default function LiveSessionPage() {
         setStatusMessage("");
         conversationHistoryRef.current = "";
         manualPauseRef.current = false;
-    }, []);
+    }, [whisper]);
 
     // Toggle listening pause (for when user is speaking)
     const toggleListeningPause = useCallback(() => {
@@ -768,16 +752,6 @@ export default function LiveSessionPage() {
         }
         console.log(`[Live] Listening ${newState ? "paused (manual)" : "resumed (manual)"}`);
     }, []);
-
-    // Quick topic handler — sends a predefined question directly to the AI
-    const handleQuickTopic = useCallback(
-        (prompt: string) => {
-            if (processingRef.current || !isLive) return;
-            console.log(`[Live] Quick topic: "${prompt}"`);
-            processTranscript(prompt);
-        },
-        [isLive, processTranscript]
-    );
 
     // Keyboard shortcut: hold Space to pause listening while you speak
     useEffect(() => {
@@ -1273,26 +1247,6 @@ export default function LiveSessionPage() {
                                         </div>
                                     </div>
                                 )}
-                            </div>
-
-                            {/* Quick Topics — fallback when transcription misses the question */}
-                            <div className="px-4 pb-3">
-                                <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider mb-2">
-                                    <MessageSquare className="w-3 h-3 inline mr-1" />
-                                    Quick Topics
-                                </p>
-                                <div className="flex flex-wrap gap-1.5">
-                                    {QUICK_TOPICS.map((topic) => (
-                                        <button
-                                            key={topic.label}
-                                            onClick={() => handleQuickTopic(topic.prompt)}
-                                            disabled={processingRef.current}
-                                            className="px-2.5 py-1.5 text-[11px] font-medium rounded-lg border border-slate-200 bg-white hover:bg-blue-50 hover:border-blue-300 hover:text-blue-700 transition-all duration-150 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed active:scale-95"
-                                        >
-                                            {topic.label}
-                                        </button>
-                                    ))}
-                                </div>
                             </div>
 
                             {/* Quick Actions */}

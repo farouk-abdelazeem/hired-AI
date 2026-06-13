@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /**
  * Whisper Web Worker — runs local speech-to-text inference off the main thread.
  *
