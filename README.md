@@ -122,4 +122,18 @@ firebase deploy --only firestore:rules
 
 ---
 
+## 👨‍💻 Author
+
+**Farouk Abdelazeem**
+- **Email:** eng.farouk2070@gmail.com
+- **GitHub:** [@farouk-abdelazeem](https://github.com/farouk-abdelazeem)
+
+---
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+---
+
 *Built with Next.js, Firebase, and Gemini AI.*
